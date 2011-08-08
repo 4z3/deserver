@@ -1,0 +1,27 @@
+{ "name" : "deserver",
+  "version" : "0.0.1",
+  "description" : "A simple development server",
+  "keywords": [ "http", "file", "proxy" ],
+  "homepage": "https://github.com/4z3/deserver",
+  "author": "tv",
+  "bin": {
+    "deserver": "./index.js"
+  },
+  "repository" : { 
+    "type" : "git",
+    "url" : "https://github.com/4z3/deserver"
+  },
+  "bugs" : { 
+    "web" : "https://github.com/4z3/deserver/issues" 
+  }, 
+  "licenses" : [{ 
+      "type" : "WTFPL",
+      "url" : "https://github.com/4z3/deserver/COPYING"
+    }],
+  "dependencies": {
+    "wwwdude": "https://github.com/4z3/node-wwwdude/tarball/v0.1.1"
+  },
+  "engines" : {
+    "node": ">= 0.4.0"
+  }
+}
