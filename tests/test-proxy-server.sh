@@ -36,7 +36,7 @@ trap "$atexit" EXIT INT
 
 start_server() {
   node . &
-  atexit="${atexit+$atexit;}kill -n 0 $! && kill $!"
+  atexit="${atexit+$atexit;}kill -0 $! && kill $!"
   trap "$atexit" EXIT INT
   while ! curl -s -X HEAD "$fe_url"; do
     sleep 0.05
@@ -45,8 +45,17 @@ start_server() {
   echo 'front-end server seems online'
 
   # backend server
-  python2 -m SimpleHTTPServer $be_port &
-  atexit="${atexit+$atexit;}kill -n 0 $! && kill $!"
+  py_major_version="`python --version 2>&1 |
+      sed -rn 's/^Python +([0-9]+).*$/\1/p'`"
+  case "$py_major_version" in
+    (2) python -m SimpleHTTPServer $be_port & ;;
+    (3) python -m http.server $be_port & ;;
+    (*)
+      echo "Bad python major version: \"$py_major_version\"" >&2
+      exit 23
+    ;;
+  esac
+  atexit="${atexit+$atexit;}kill -0 $! && kill $!"
   trap "$atexit" EXIT INT
   while ! curl -s -X GET "$be_url" >/dev/null; do
     sleep 0.05

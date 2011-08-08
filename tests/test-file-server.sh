@@ -70,7 +70,7 @@ url=http://127.0.0.1:1337/
 
 start_server() {
   node . &
-  atexit="${atexit+$atexit;}kill -n 0 $! && kill $!"
+  atexit="${atexit+$atexit;}kill -0 $! && kill $!"
   trap "$atexit" EXIT INT
 
   while ! curl -s -X HEAD $url; do
