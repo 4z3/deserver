@@ -1,0 +1,13 @@
+If affection lead a man to favor the less worthy in desert, let him do it,
+without depraving or disabling the better deserver.
+-- The Essays by Bacon, Sir Francis
+
+
+    git clone https://github.com/4z3/deserver
+    node deserver &
+    f=/bin/bash
+    t="`file -ib $f`"
+    curl -X PUT --data-binary @$f -H "Content-Type:$t" http://127.0.0.1:1337$f
+    curl http://127.0.0.1:1337$f > $f # yay^_^
+    curl -X DELETE http://127.0.0.1:1337$f
+
