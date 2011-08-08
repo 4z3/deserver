@@ -12,14 +12,14 @@ exports.slurp = (function () {
 
   function finish_it (req, buffers, length, callback) {
     req.content = join_buffers(buffers, length);
-    return callback(null, req.content);
+    return callback(req.content);
   };
 
   function nop () {};
 
   return function (req, callback) {
     if (req.hasOwnProperty('content')) {
-      return callback(null, req.content);
+      return callback(req.content);
     };
     var content = [];
     var length = 0;

@@ -1,71 +1,66 @@
 //
-// PUT url
-//    201 create a new resource
-//    405 method not allowed / resource already exists
-//    500 failed to slurp content
+// deserver file server
 //
-// GET url
-//    200 retrieve an existing resource
+// This component provides a REST-like, memory-backed file server.
+//
+// Interface:
+//
+//  PUT {url}
+//    201 create a new resource
+//    405 resource already exists
+//
+//  GET {url}
+//    200 retrieve existing resource
 //    404 not found
 //
-// DELETE url
+//  DELETE {url}
 //    200 delete an existing resource
 //    404 not found
 //
-// *
-//    405 method not allowed [this could also be "bad request"?]
+//  any other method yields 405
 //
-
-var slurp = require('./util').slurp;
-var end = require('./util').end;
-
 exports.create = function () {
 
-  var files = {};
+  var cache = {};
+
+  var slurp = require('./util').slurp;
+  var end = require('./util').end;
+
   var methods = {};
 
   methods.GET = function (req, res) {
-    if (files.hasOwnProperty(req.url)) {
-      var file = files[req.url];
-      end(res, 200, { 'content-type': file.type }, file.content);
-    } else {
-      end(res, 404);
-    };
+    if (!cache.hasOwnProperty(req.url))
+      return end(res, 404);
+
+    var file = cache[req.url];
+    end(res, 200, { 'content-type': file.type }, file.content);
   };
 
   methods.PUT = function (req, res) {
-    if (!files.hasOwnProperty(req.url)) {
-      slurp(req, function (err, content) {
-        if (!err) {
-          files[req.url] = {
-            type: req.headers['content-type'],
-            content: content
-          };
-          console.log('create files[', JSON.stringify(req.url), ']');
-          end(res, 201);
-        } else {
-          end(res, 500);
-        };
-      });
-    } else {
-      end(res, 405, { 'allow': 'GET, DELETE' });
-    };
+    if (cache.hasOwnProperty(req.url))
+      return end(res, 405, { 'allow': 'GET, DELETE' });
+
+    return slurp(req, function (content) {
+      cache[req.url] = {
+        type: req.headers['content-type'],
+        content: content
+      };
+      return end(res, 201);
+    });
   };
 
   methods.DELETE = function (req, res) {
-    if (files.hasOwnProperty(req.url)) {
-      delete files[req.url];
-      end(res, 200);
-    } else {
-      end(res, 404);
-    };
+    if (!cache.hasOwnProperty(req.url))
+      return end(res, 404);
+
+    delete cache[req.url];
+    return end(res, 200);
   };
 
   return function (req, res) {
-    if (methods.hasOwnProperty(req.method)) {
-      // TODO return only if this module could handle the request
-      return methods[req.method](req, res);
-    };
-    end(res, 405, { 'allow': Object.keys(methods) });
+    if (!methods.hasOwnProperty(req.method))
+      return end(res, 405, { 'allow': Object.keys(methods) });
+
+    return methods[req.method](req, res);
   };
 };
