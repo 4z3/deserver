@@ -17,7 +17,7 @@
 //    200 delete an existing resource
 //    404 not found
 //
-//  any other method yields 405
+//  Any request with an other method yields 405.
 //
 exports.create = function () {
 
