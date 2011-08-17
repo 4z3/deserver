@@ -37,7 +37,7 @@ exports.slurp = (function () {
   };
 })();
 
-exports.end = function (res, statusCode, headers, content) {
+exports.end = function (req, res, statusCode, headers, content) {
   var myheaders = {
     'Content-Length': content && content.length || 0
   };
@@ -48,4 +48,5 @@ exports.end = function (res, statusCode, headers, content) {
   };
   res.writeHead(statusCode, myheaders);
   res.end(content);
+  console.log(req.method, req.url, statusCode);
 };

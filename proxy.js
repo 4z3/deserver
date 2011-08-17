@@ -42,7 +42,7 @@ exports.create = function () {
         /^\/[^\/]+$/.test(req.url)) {
 
       if (proxies.hasOwnProperty(req.url))
-        return end(res, 405, { 'allow': 'GET, DELETE' });
+        return end(req, res, 405, { 'allow': 'GET, DELETE' });
 
       return slurp(req, function (content) {
         try {
@@ -52,7 +52,7 @@ exports.create = function () {
               !(typeof proxy.baseURL === 'string'))
             throw new Error('bad content');
         } catch (exn) {
-          return end(res, 400);
+          return end(req, res, 400);
         };
         proxies[req.url] = proxy;
         return next(req, res);
@@ -89,10 +89,10 @@ exports.create = function () {
 
         preq
           .on('error', function (err) {
-            end(res, 500);
+            end(req, res, 500);
           })
           .on('complete', function (p_content, p_res) {
-            end(res, p_res.statusCode, p_res.headers, p_content);
+            end(req, res, p_res.statusCode, p_res.headers, p_content);
           });
       });
     };

@@ -30,36 +30,36 @@ exports.create = function () {
 
   methods.GET = function (req, res) {
     if (!cache.hasOwnProperty(req.url))
-      return end(res, 404);
+      return end(req, res, 404);
 
     var file = cache[req.url];
-    end(res, 200, { 'content-type': file.type }, file.content);
+    end(req, res, 200, { 'content-type': file.type }, file.content);
   };
 
   methods.PUT = function (req, res) {
     if (cache.hasOwnProperty(req.url))
-      return end(res, 405, { 'allow': 'GET, DELETE' });
+      return end(req, res, 405, { 'allow': 'GET, DELETE' });
 
     return slurp(req, function (content) {
       cache[req.url] = {
         type: req.headers['content-type'],
         content: content
       };
-      return end(res, 201);
+      return end(req, res, 201);
     });
   };
 
   methods.DELETE = function (req, res) {
     if (!cache.hasOwnProperty(req.url))
-      return end(res, 404);
+      return end(req, res, 404);
 
     delete cache[req.url];
-    return end(res, 200);
+    return end(req, res, 200);
   };
 
   return function (req, res) {
     if (!methods.hasOwnProperty(req.method))
-      return end(res, 405, { 'allow': Object.keys(methods) });
+      return end(req, res, 405, { 'allow': Object.keys(methods) });
 
     return methods[req.method](req, res);
   };
