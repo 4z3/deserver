@@ -15,7 +15,7 @@ publish: version := $(shell tools/read-version < package.json)
 publish:
 	tools/is-clean-working-directory
 	git tag $(force) v$(version)
-	git push
+	git push --tags origin master
 	npm publish $(force)
 
 publish-force: force := --force
