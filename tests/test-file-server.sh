@@ -1,5 +1,11 @@
 #! /bin/sh
 
+export host=127.0.0.1
+export port=1337
+export handler=file
+
+url=http://$host:$port/
+
 run_tests() {
   content='Hello, world!'
   content_type='text/plain-zzz'
@@ -65,8 +71,6 @@ temp2="`mktemp`"
 atexit="${atexit+$atexit;}rm -f $temp1 $temp2"
 trap "$atexit" EXIT INT
 
-
-url=http://127.0.0.1:1337/
 
 start_server() {
   node . &

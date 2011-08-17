@@ -1,21 +1,28 @@
 #! /bin/sh
 
-fe_port=1337; fe_url="http://127.0.0.1:$fe_port"
-be_port=1338; be_url="http://127.0.0.1:$be_port"
+export host=127.0.0.1
+export port=1337
+export handler=proxy
+
+url=http://$host:$port
+
+be_host=$host
+be_port=1338
+be_url=http://$be_host:$be_port
 
 run_tests() {
   p_content="{\"baseURL\":\"$be_url\"}"
   p_type='application/vnd.deserver.proxy-v0+json'
 
   begin 'PUT /p (nonexistent proxy resource)'
-    PUT "$fe_url/p" "$p_content" "$p_type"
+    PUT "$url/p" "$p_content" "$p_type"
     assert status_code 201
     assert content ''
   end
 
   f=tests/data/foo.txt
   begin "GET /p/$f"
-    GET "$fe_url/p/$f" "$p_content" "$p_type"
+    GET "$url/p/$f" "$p_content" "$p_type"
     assert status_code 200
     assert content "`cat $f`"
   end
@@ -38,7 +45,7 @@ start_server() {
   node . &
   atexit="${atexit+$atexit;}kill -0 $! && kill $!"
   trap "$atexit" EXIT INT
-  while ! curl -s -X HEAD "$fe_url"; do
+  while ! curl -s -X HEAD "$url"; do
     sleep 0.05
   done
 
