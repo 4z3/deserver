@@ -22,18 +22,16 @@
 //    Let /foo be the proxy resource { "baseURL": "http://quux:3" },
 //    then GET /foo/bar will be a proxy request to http://quux:3/bar
 //
+
+var createClient = require('wwwdude').createClient;
+var end = require('./util').end;
+var slurp = require('./util').slurp;
+var type = 'application/vnd.deserver.proxy-v0+json';
+
 exports.create = function () {
 
   var next = require('./file').create();
-
   var proxies = {};
-
-  var slurp = require('./util').slurp;
-  var end = require('./util').end;
-  var wwwdude = require('wwwdude');
-
-  var type = 'application/vnd.deserver.proxy-v0+json';
-
   var methods = {};
 
   methods.PUT = function (req, res) {
@@ -69,36 +67,39 @@ exports.create = function () {
   return function (req, res) {
     var match = /^(\/[^\/]+)(\/.*)$/.exec(req.url);
     if (match && proxies.hasOwnProperty(match[1])) {
-      return slurp(req, function (content) {
-
-        var dude = wwwdude.createClient({ gzip: false });
-        var preq;
-        var url = proxies[match[1]].baseURL + match[2];
-
-        // rewrite request
-        delete req.headers['host'];
-        delete req.headers['connection'];
-        delete req.headers['content-length'];
-        delete req.headers['accept-encoding'];
-        delete req.headers['if-none-match'];
-
-        preq = dude[req.method.replace('DELETE', 'del').toLowerCase()](url, {
-          payload: content,
-          headers: req.headers
-        });
-
-        preq
-          .on('error', function (err) {
-            end(req, res, 500);
-          })
-          .on('complete', function (p_content, p_res) {
-            end(req, res, p_res.statusCode, p_res.headers, p_content);
-          });
-      });
+      return proxy_handler(req, res, proxies[match[1]].baseURL + match[2]);
     };
     if (methods.hasOwnProperty(req.method)) {
       return methods[req.method](req, res);
     };
     return next(req, res);
   };
+};
+
+var proxy_handler = exports.handler = function (req, res, url) {
+  return slurp(req, function (content) {
+
+    var client = createClient({ gzip: false });
+    var preq;
+
+    // rewrite request
+    delete req.headers['host'];
+    delete req.headers['connection'];
+    delete req.headers['content-length'];
+    delete req.headers['accept-encoding'];
+    delete req.headers['if-none-match'];
+
+    preq = client[req.method.replace('DELETE', 'del').toLowerCase()](url, {
+      payload: content,
+      headers: req.headers
+    });
+
+    preq
+      .on('error', function (err) {
+        end(req, res, 500);
+      })
+      .on('complete', function (p_content, p_res) {
+        end(req, res, p_res.statusCode, p_res.headers, p_content);
+      });
+  });
 };
