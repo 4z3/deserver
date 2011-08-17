@@ -1,0 +1,6 @@
+#! /bin/sh
+if git status --porcelain | grep -q .; then
+  echo 'working directory is a mess:'
+  git status --porcelain
+  exit 1
+fi

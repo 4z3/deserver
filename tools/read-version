@@ -1,0 +1,2 @@
+#! /bin/sh
+exec sed -rn 's/^ *"version" *: *"([0-9.]+)",? *$$/\1/p'
