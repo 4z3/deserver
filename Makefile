@@ -1,5 +1,5 @@
 
-.PHONY: all test publish
+.PHONY: all test publish publish-force
 all: select-target
 
 test:
@@ -14,6 +14,9 @@ test:
 publish: version := $(shell tools/read-version < package.json)
 publish:
 	tools/is-clean-working-directory
-	git tag --force v$(version)
+	git tag $(force) v$(version)
 	git push
-	npm publish --force
+	npm publish $(force)
+
+publish-force: force := --force
+publish-force: publish
