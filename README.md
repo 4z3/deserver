@@ -1,6 +1,6 @@
-If affection lead a man to favor the less worthy in desert, let him do it,
-without depraving or disabling the better deserver.
--- The Essays by Bacon, Sir Francis
+In The Essays by Bacon, Sir Francis wrote:
+> If affection lead a man to favor the less worthy in desert, let him do it,
+> without depraving or disabling the better deserver.
 
 # Quick Start Guide
 
