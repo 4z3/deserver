@@ -16,9 +16,9 @@
 
 On startup the server annources itself using the following format:
 
-       "Deserving HTTP -> on %s port %u\n", hostname, port
+    "Deserving HTTP -> on %s port %u\n", hostname, port
 
 Each HTTP-request is reported using the following format:
 
-       "%s %s %u\n", method, url, statusCode
+    "%s %s %u\n", method, url, statusCode
 
