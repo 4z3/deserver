@@ -1,9 +1,13 @@
 #! /usr/bin/env node
 
-port = 1337;
+var host = process.env.host || '0.0.0.0';
+var port = process.env.port || 1337;
+var handler_name = process.env.handler || 'proxy';
 
-var handler = require('./proxy').create();
+var handler =
+  require('./' + handler_name).create.apply(this, process.argv.slice(2));
 
-require('http').createServer(handler).listen(port, function () {
-  console.log('Deserving HTTP on 0.0.0.0 port', port, '...');
+require('http').createServer(handler).listen(port, host, function () {
+  console.log('Deserving HTTP on', host, 'port', port, '...');
+  console.log('Handler:', handler_name);
 });
