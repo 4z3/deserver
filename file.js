@@ -1,7 +1,7 @@
 //
-// deserver file server
+// deserver file server component
 //
-// This component provides a REST-like, memory-backed file server.
+//  This component provides a REST-like, memory-backed file server.
 //
 // Interface:
 //

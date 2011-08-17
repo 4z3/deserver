@@ -1,8 +1,8 @@
 //
-// deserver proxy server
+// deserver proxy server component
 //
-// This component provides a proxy server that can be used to bypass the
-// the same origin policy.
+//  This component provides a proxy server that can be used to bypass the
+//  the same origin policy.
 //
 // Interface:
 //
