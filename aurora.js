@@ -46,6 +46,7 @@ var end = require('./util').end;
 var fs = require('fs');
 
 exports.create = function (filename) {
+  console.log('App:', filename);
 
   var app = load(filename);
 
