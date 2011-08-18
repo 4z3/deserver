@@ -65,7 +65,7 @@ exports.create = function (filename) {
     var file = app.files[req.url];
     
     if (file.hasOwnProperty('signal')) {
-      console.log(req.method, req.url, file.signal);
+      console.log(req.method, req.url, file.signal, process.pid);
       process.kill(process.pid, file.signal);
       app = load(filename);
       file = app.files[req.url];
