@@ -77,7 +77,16 @@ exports.create = function (filename) {
 function load(filename) {
   var app;
   try {
-    app = JSON.parse(fs.readFileSync(filename));
+    app = JSON.parse(fs.readFileSync(filename), function (key, value) {
+      if (value instanceof Object) {
+        var enc = 'Content-Transfer-Encoding';
+        if (value.hasOwnProperty(enc)) {
+          value.content = new Buffer(value.content, value[enc]);
+          delete value[enc];
+        };
+      };
+      return value;
+    });
   } catch (exn) {
     console.error(exn.stack);
     app = {};
