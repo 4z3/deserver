@@ -1,0 +1,24 @@
+#! /usr/bin/env node
+//
+// usage: json-query filename [--json] [keys...]
+//
+
+var args = process.argv.slice(2);
+var filename = args.shift();
+var x = JSON.parse(require('fs').readFileSync(filename));
+
+var filter = function (x) {
+  return x;
+};
+
+args.forEach(function (key) {
+  if (key === '--json') {
+    filter = function (x) {
+      return JSON.stringify(x, null, 2);
+    };
+  } else {
+    x = x[key];
+  };
+});
+
+console.log(filter(x));

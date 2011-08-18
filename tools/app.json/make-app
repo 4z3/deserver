@@ -1,0 +1,23 @@
+#! /bin/sh
+#
+# usage: make-app [build_dir]
+#
+set -euf
+
+PATH="$(dirname $(readlink -f $0))${PATH+:$PATH}"
+
+app_name="`json-query $config_json name`"
+
+{
+  make-app-files $app_name $1 | sed '
+    1s/^/"files": /
+    $s/$/,/
+  '
+  make-app-proxies $config_json | sed '
+    1s/^/"proxies": /
+  '
+} | sed '
+  s/^/  /
+  1s/^/{\n/
+  $s/$/\n}/
+'

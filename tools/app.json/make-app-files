@@ -1,0 +1,51 @@
+#! /bin/sh
+#
+# usage: make-app-files app_name build_dir
+#
+set -euf
+
+app_name="$1"
+build_dir="$2"
+
+typeof() {
+  # TODO use file; ensure that file works everywhere...lol
+  echo "$1" | sed '
+    s:^.*\.css$:text/css:
+    s:^.*\.gif$:image/gif:
+    s:^.*\.html$:text/html:
+    s:^.*\.jpg$:image/jpeg:
+    s:^.*\.js$:application/javascript:
+    s:^.*\.json$:application/json:
+    s:^.*\.manifest$:text/cache-manifest:
+    s:^.*\.png$:image/png:
+    s:^.*\.svg$:image/svg+xml:
+  '
+}
+
+cd "$build_dir"
+find . -type f | sed "s:^\./::" |
+while read filename; do
+  if test "$filename" = "index.html"; then
+    signal='"signal": "SIGSTOP"'
+  else
+    unset signal
+  fi
+  url="/$app_name/$filename"
+  type="`typeof $filename`"
+  content="`base64 -w 0 $filename`"
+  encoding='"Content-Transfer-Encoding": "base64"'
+
+  cat<<EOF
+"$url": {
+  "type": "$type",
+  "content": "$content"${encoding+,
+  $encoding}${signal+,
+  $signal}
+}
+EOF
+done | sed '
+  $!s/^}$/&,/
+  s/^/  /
+  1s/^/{\n/
+  $s/$/\n}/
+'

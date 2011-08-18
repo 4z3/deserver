@@ -1,0 +1,18 @@
+#! /usr/bin/env node
+//
+// usage: make-app-proxies config_json
+//
+
+var args = process.argv.slice(2);
+var filename = args.shift();
+var x = JSON.parse(require('fs').readFileSync(filename));
+
+var proxies = {};
+
+x.proxies.forEach(function (proxy) {
+  proxies['/' + proxy.proxyAlias] = {
+    baseURL: proxy.baseUrl
+  };
+});
+
+console.log(JSON.stringify(proxies, null, 2));
