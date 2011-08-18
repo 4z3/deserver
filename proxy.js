@@ -78,6 +78,7 @@ exports.create = function () {
 
 var proxy_handler = exports.handler = function (req, res, url) {
   return slurp(req, function (content) {
+    console.log('PROXY', req.method, url);
 
     var client = createClient({ gzip: false });
     var preq;
