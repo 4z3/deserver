@@ -1,5 +1,5 @@
 { "name" : "deserver",
-  "version" : "0.0.1",
+  "version" : "0.0.2",
   "description" : "A simple development server",
   "keywords": [ "http", "file", "proxy" ],
   "homepage": "https://github.com/4z3/deserver",
