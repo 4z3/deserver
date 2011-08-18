@@ -90,7 +90,7 @@ var proxy_handler = exports.handler = function (req, res, url) {
     delete req.headers['if-none-match'];
 
     preq = client[req.method.replace('DELETE', 'del').toLowerCase()](url, {
-      payload: content,
+      payload: content.toString('binary'),
       headers: req.headers
     });
 
