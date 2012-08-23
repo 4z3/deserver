@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/4z3/deserver.png)](http://travis-ci.org/4z3/deserver)
     If affection lead a man to favor the less worthy in desert, let
     him do it, without depraving or disabling the better deserver.
     -- The Essays by Bacon, Sir Francis
